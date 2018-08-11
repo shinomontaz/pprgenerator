@@ -39,7 +39,7 @@ func Generate(num int, start, end time.Time, rnd *rand.Rand) (jobs []*Job) {
 		}
 		jobs = append(jobs,
 			&Job{
-				Id:         i,
+				Id:         i + 1,
 				Name:       randomdata.SillyName(),
 				Difficulty: float64(rnd.Intn(2)) + rnd.Float64(),
 				pTower:     towers[rnd.Intn(tower_num)],
