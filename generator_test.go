@@ -9,17 +9,24 @@ import (
 )
 
 func TestGenerate(t *testing.T) {
-	start := time.Date(2018, 1, 1, 0, 0, 0, 0, time.UTC)
-	end := time.Date(2018, 6, 30, 0, 0, 0, 0, time.UTC)
-	rnd := rand.New(rand.NewSource(time.Now().UnixNano()))
-	jobs := Generate(10, start, end, rnd)
+
+	conf := Config{
+		Start:         time.Date(2018, 1, 1, 0, 0, 0, 0, time.UTC),
+		End:           time.Date(2018, 6, 30, 0, 0, 0, 0, time.UTC),
+		Rnd:           rand.New(rand.NewSource(time.Now().UnixNano())),
+		NumJobs:       100,
+		NumInterrupts: 10,
+	}
+
+	conf.Init()
+	jobs := conf.Jobs()
+	interrupts := conf.Interrupts()
 
 	for _, job := range jobs {
 		jsonStr, _ := json.Marshal(job)
-
 		fmt.Printf("%s\n", jsonStr)
-
 	}
 
-	//	jsonStr, _ := json.Marshal(jobs)
+	jsonStr, _ := json.Marshal(interrupts)
+	fmt.Printf("%s\n", jsonStr)
 }

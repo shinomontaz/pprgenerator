@@ -7,47 +7,71 @@ import (
 	"github.com/Pallinder/go-randomdata"
 )
 
-func Generate(num int, start, end time.Time, rnd *rand.Rand) (jobs []*Job) {
+type Config struct {
+	Start         time.Time
+	End           time.Time
+	Rnd           *rand.Rand
+	NumJobs       int
+	NumInterrupts int
+	jobsList      []*Job
+	interrupts    []*Interrupt
+}
+
+func (c *Config) Init() {
 	// generate range of days
-	tower_num := (num / 10) + rnd.Intn(num/10)
+	tower_num := (c.NumJobs / 10) + c.Rnd.Intn(c.NumJobs/10)
 	towers := make([]*Tower, 0, tower_num)
 	for i := 0; i < tower_num; i++ {
 		towers = append(towers, &Tower{
 			Id:     i,
-			Weight: 1000 * rnd.Intn(num),
-			x:      1000 * rnd.Float64(),
-			y:      1000 * rnd.Float64(),
+			Weight: 1000 * c.Rnd.Intn(c.NumJobs),
+			x:      1000 * c.Rnd.Float64(),
+			y:      1000 * c.Rnd.Float64(),
 		})
 	}
 
-	days_step := int(end.Sub(start).Seconds() / (60.0 * 60.0 * 24))
+	days_step := int(c.End.Sub(c.Start).Seconds() / (60.0 * 60.0 * 24)) // количество дней в диапазоне
 
-	for i := 0; i < num; i++ {
-		rand_int := rnd.Intn(3)
-		var rand_bool bool
-		if rand_int > 1 {
-			rand_bool = true
+	for i := 0; i < c.NumJobs; i++ {
+		var randBool bool
+		if c.Rnd.Intn(3) > 1 {
+			randBool = true
 		}
 
-		days_num := rnd.Intn(20)
-		days := make([]time.Time, 0, days_num)
-		curr_day := start.Add(time.Duration(rnd.Intn(days_step)*60*24) * time.Minute)
+		daysNum := c.Rnd.Intn(20)
+		days := make([]time.Time, 0, daysNum)
+		currDay := c.Start.Add(time.Duration(c.Rnd.Intn(days_step)*60*24) * time.Minute)
 
-		for j := 0; j < days_num && curr_day.Before(end); j++ {
-			days = append(days, curr_day)
-			curr_day = curr_day.Add(time.Duration(60*24) * time.Minute)
+		for j := 0; j < daysNum && currDay.Before(c.End); j++ {
+			days = append(days, currDay)
+			currDay = currDay.Add(time.Duration(60*24) * time.Minute)
 		}
-		jobs = append(jobs,
+		c.jobsList = append(c.jobsList,
 			&Job{
 				Id:         i + 1,
 				Name:       randomdata.SillyName(),
-				Difficulty: float64(rnd.Intn(2)) + rnd.Float64(),
-				pTower:     towers[rnd.Intn(tower_num)],
-				IsBreaking: rand_bool,
+				Difficulty: float64(c.Rnd.Intn(2)) + c.Rnd.Float64(),
+				pTower:     towers[c.Rnd.Intn(tower_num)],
+				IsBreaking: randBool,
 				Days:       days,
 			},
 		)
 	}
 
-	return jobs
+	randInterrupts := c.Rnd.Perm(days_step)[:c.NumInterrupts]
+
+	for i := 0; i < c.NumInterrupts; i++ {
+		c.interrupts = append(c.interrupts, &Interrupt{
+			Day:    c.Start.Add(time.Duration(randInterrupts[i]*60*24) * time.Minute),
+			Length: c.Rnd.Float64() * 24,
+		})
+	}
+}
+
+func (c *Config) Jobs() []*Job {
+	return c.jobsList
+}
+
+func (c *Config) Interrupts() []*Interrupt {
+	return c.interrupts
 }

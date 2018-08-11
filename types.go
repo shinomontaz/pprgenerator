@@ -18,3 +18,8 @@ type Tower struct {
 	x      float64 `json:"x"`
 	y      float64 `json:"y"`
 }
+
+type Interrupt struct {
+	Day    time.Time
+	Length float64 // длительность остановки вещания в часах
+}
