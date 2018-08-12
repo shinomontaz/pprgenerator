@@ -7,7 +7,7 @@ type Job struct {
 	Name       string
 	Difficulty float64 // человеко-часов на выполнение этой работы
 	Days       []time.Time
-	pTower     *Tower
+	Tower      *Tower
 	IsBreaking bool
 }
 

@@ -51,7 +51,7 @@ func (c *Config) Init() {
 				Id:         i + 1,
 				Name:       randomdata.SillyName(),
 				Difficulty: float64(c.Rnd.Intn(2)) + c.Rnd.Float64(),
-				pTower:     towers[c.Rnd.Intn(tower_num)],
+				Tower:      towers[c.Rnd.Intn(tower_num)],
 				IsBreaking: randBool,
 				Days:       days,
 			},
