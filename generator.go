@@ -86,9 +86,9 @@ func (c *Config) Init() {
 
 	for i := 0; i < c.NumInterrupts; i++ {
 		c.stops = append(c.stops, &Stop{
-			Day:    c.Start.Add(time.Duration(randInterrupts[i]*60*24) * time.Minute),
-			Length: c.Rnd.Float64() * 24,
-			FkEquipment: 
+			Day:         c.Start.Add(time.Duration(randStops[i]*60*24) * time.Minute),
+			Length:      c.Rnd.Float64() * 24,
+			FkEquipment: equipments[c.Rnd.Intn(equipment_num)],
 		})
 	}
 }
