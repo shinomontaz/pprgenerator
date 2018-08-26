@@ -15,8 +15,8 @@ type Tower struct {
 	Id     int     `json:"id"`
 	Name   string  `json:"name"`
 	Weight int     `json:"weight"` // охват населения
-	x      float64 `json:"x"`
-	y      float64 `json:"y"`
+	X      float64 `json:"x"`
+	Y      float64 `json:"y"`
 }
 
 type Equipment struct {
@@ -35,5 +35,5 @@ type Interrupt struct {
 type Stop struct {
 	Day         time.Time
 	Length      float64 // длительность остановки вещания в часах
-	FkEquipment int
+	FkEquipment *Equipment
 }

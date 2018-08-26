@@ -15,6 +15,7 @@ type Config struct {
 	NumInterrupts int
 	jobsList      []*Job
 	interrupts    []*Interrupt
+	stops         []*Stop
 }
 
 func (c *Config) Init() {
@@ -29,8 +30,8 @@ func (c *Config) Init() {
 		towers = append(towers, &Tower{
 			Id:     i,
 			Weight: 1000 * c.Rnd.Intn(c.NumJobs),
-			x:      1000 * c.Rnd.Float64(),
-			y:      1000 * c.Rnd.Float64(),
+			X:      180 * c.Rnd.Float64(),
+			Y:      180 * c.Rnd.Float64(),
 		})
 	}
 
@@ -80,6 +81,16 @@ func (c *Config) Init() {
 			Length: c.Rnd.Float64() * 24,
 		})
 	}
+
+	randStops := c.Rnd.Perm(days_step)[:c.NumInterrupts]
+
+	for i := 0; i < c.NumInterrupts; i++ {
+		c.stops = append(c.stops, &Stop{
+			Day:    c.Start.Add(time.Duration(randInterrupts[i]*60*24) * time.Minute),
+			Length: c.Rnd.Float64() * 24,
+			FkEquipment: 
+		})
+	}
 }
 
 func (c *Config) Jobs() []*Job {
@@ -88,4 +99,8 @@ func (c *Config) Jobs() []*Job {
 
 func (c *Config) Interrupts() []*Interrupt {
 	return c.interrupts
+}
+
+func (c *Config) Stops() []*Stop {
+	return c.stops
 }
