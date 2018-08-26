@@ -19,14 +19,28 @@ type Config struct {
 
 func (c *Config) Init() {
 	// generate range of days
-	tower_num := (c.NumJobs / 10) + c.Rnd.Intn(c.NumJobs/10)
+	equipment_num := (c.NumJobs / 10) + c.Rnd.Intn(c.NumJobs/10)
+	tower_num := (equipment_num / 10) + c.Rnd.Intn(equipment_num/10)
+
+	equipments := make([]*Equipment, 0, equipment_num)
 	towers := make([]*Tower, 0, tower_num)
+
 	for i := 0; i < tower_num; i++ {
 		towers = append(towers, &Tower{
 			Id:     i,
 			Weight: 1000 * c.Rnd.Intn(c.NumJobs),
 			x:      1000 * c.Rnd.Float64(),
 			y:      1000 * c.Rnd.Float64(),
+		})
+	}
+
+	for i := 0; i < equipment_num; i++ {
+		equipments = append(equipments, &Equipment{
+			Id:       i,
+			Name:     randomdata.SillyName(),
+			Weight:   1000 * c.Rnd.Intn(c.NumJobs),
+			FkTower:  towers[c.Rnd.Intn(tower_num)],
+			Majority: c.Rnd.Float64(),
 		})
 	}
 
@@ -48,12 +62,12 @@ func (c *Config) Init() {
 		}
 		c.jobsList = append(c.jobsList,
 			&Job{
-				Id:         i + 1,
-				Name:       randomdata.SillyName(),
-				Difficulty: float64(c.Rnd.Intn(2)) + c.Rnd.Float64(),
-				Tower:      towers[c.Rnd.Intn(tower_num)],
-				IsBreaking: randBool,
-				Days:       days,
+				Id:          i + 1,
+				Name:        randomdata.SillyName(),
+				Difficulty:  float64(c.Rnd.Intn(2)) + c.Rnd.Float64(),
+				FkEquipment: equipments[c.Rnd.Intn(equipment_num)],
+				IsBreaking:  randBool,
+				Days:        days,
 			},
 		)
 	}
