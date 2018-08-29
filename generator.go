@@ -30,8 +30,10 @@ func (c *Config) Init() {
 		towers = append(towers, &Tower{
 			Id:     i,
 			Weight: 1000 * c.Rnd.Intn(c.NumJobs),
-			X:      180 * c.Rnd.Float64(),
-			Y:      180 * c.Rnd.Float64(),
+			Coords: LatLong{
+				Lat:  180 * c.Rnd.Float64(),
+				Long: 180 * c.Rnd.Float64(),
+			},
 		})
 	}
 
